@@ -10,6 +10,31 @@ from .docrender_utils.files import read_yaml, is_like_relative_path, read_text
 from .docrender_utils.lock import get_lock
 
 
+def _resolve_variables(v: Any, base_dir: Optional[PathLike] = None) -> Any:
+    """resolves variable as absolute path is it is relative and is not forbidden to be resolved"""
+
+    if isinstance(v, dict):
+        return {
+            k: _resolve_variables(vv, base_dir=base_dir)
+            for k, vv in v.items()
+        }
+    if isinstance(v, (list, tuple)):
+        return [
+            _resolve_variables(vv, base_dir=base_dir) for vv in v
+        ]
+
+    if isinstance(v, str):
+        if v.startswith('!'):  # when resolution is forbidden
+            v = v[1:]
+            if v and is_like_relative_path(v):
+                return v  # return unresolved
+            return '!' + v  # return original
+        elif base_dir and is_like_relative_path(v):
+            return str(Path(base_dir, v).resolve().absolute())  # return resolved
+
+    return v
+
+
 def load_settings_from_yaml(
     path: PathLike,
     object_to_update: MutableMapping[str, Any],
@@ -34,15 +59,7 @@ def load_settings_from_yaml(
 
     new_vars = read_yaml(io.StringIO(text))
     if new_vars:
-        if base_dir:
-            new_vars = {
-                k: (
-                    str(Path(base_dir, v).resolve().absolute())
-                    if isinstance(v, str) and is_like_relative_path(v)
-                    else v
-                )
-                for k, v in new_vars.items()
-            }
+        new_vars = _resolve_variables(new_vars, base_dir=base_dir)
 
         # much extended version of object_to_update.update(_new_vars)
         from .settings_update import update_data
