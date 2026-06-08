@@ -210,6 +210,8 @@ def load_vars_from_env(
 def save_settings_debug(settings: Mapping[str, Any]):
     """
     save all settings for debug only purposes
+    
+    saves them to settings.SAVE_SETTINGS_DEBUG if set
     """
     _s = settings.get("SAVE_SETTINGS_DEBUG", None)
     if _s:
