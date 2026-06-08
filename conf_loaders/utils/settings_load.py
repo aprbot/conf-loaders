@@ -10,7 +10,11 @@ from .docrender_utils.files import read_yaml, is_like_relative_path, read_text
 from .docrender_utils.lock import get_lock
 
 
-def _resolve_variables(v: Any, base_dir: Optional[PathLike] = None) -> Any:
+def _resolve_variables(
+    v: Any, 
+    base_dir: Optional[PathLike] = None,
+    debug_mode: bool = False,
+) -> Any:
     """resolves variable as absolute path if it is relative and is not forbidden to be resolved"""
 
     if isinstance(v, dict):
@@ -33,10 +37,23 @@ def _resolve_variables(v: Any, base_dir: Optional[PathLike] = None) -> Any:
                         f"Value *!{v}* (seems like to be a relative path) is converted to *{v}* due to ! disables relative->absolute conversion. "
                         f"But base_dir={base_dir} what means u probably need to remove ! from the config manually or disable any variables resolutions and checks by setting base_dir=..."
                     )
-                return v  # return unresolved
+                #
+                # return unresolved
+                #
+                if debug_mode:
+                    return f"{v} [extracted from !{v}]"
+                else:
+                    return v  
             return '!' + v  # return original
         elif base_dir and is_like_relative_path(v):
-            return str(Path(base_dir, v).resolve().absolute())  # return resolved
+            #
+            # return resolved
+            #
+            r = str(Path(base_dir, v).resolve().absolute())
+            if debug_mode:
+                return f"{r} [resolved from {v} relative to {base_dir}]"
+            else:
+                return r
 
     return v
 
