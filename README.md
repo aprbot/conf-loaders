@@ -77,6 +77,8 @@ PATTERN: "!./relative/path"
 
 Path resolution is recursive — works inside nested dicts and lists.
 
+U can disable all these operations by setting `base_dir=...`.
+
 ### Update operations
 
 By default, a YAML key replaces the entire Python value. Use `@operation` suffixes to merge instead:

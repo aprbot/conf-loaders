@@ -11,7 +11,7 @@ from .docrender_utils.lock import get_lock
 
 
 def _resolve_variables(v: Any, base_dir: Optional[PathLike] = None) -> Any:
-    """resolves variable as absolute path is it is relative and is not forbidden to be resolved"""
+    """resolves variable as absolute path if it is relative and is not forbidden to be resolved"""
 
     if isinstance(v, dict):
         return {
@@ -27,6 +27,12 @@ def _resolve_variables(v: Any, base_dir: Optional[PathLike] = None) -> Any:
         if v.startswith('!'):  # when resolution is forbidden
             v = v[1:]
             if v and is_like_relative_path(v):
+                if not base_dir:
+                    import warnings
+                    warnings.warn(
+                        f"Value *!{v}* (seems like to be a relative path) is converted to *{v}* due to ! disables relative->absolute conversion. "
+                        f"But base_dir={base_dir} what means u probably need to remove ! from the config manually or disable any variables resolutions and checks by setting base_dir=..."
+                    )
                 return v  # return unresolved
             return '!' + v  # return original
         elif base_dir and is_like_relative_path(v):
@@ -48,7 +54,9 @@ def load_settings_from_yaml(
     Args:
         path: path to yaml file
         object_to_update: object to be updated using this file, usually locals()
-        base_dir: base directory to translate relative paths; None means to disable this translation
+        base_dir: base directory to translate relative paths; 
+            None means to disable this translation, but perform some checks and fixes;
+            ... means to disable any translations and checks at all
         show_update_errors: whether to verbose updating errors
 
     """
@@ -59,7 +67,8 @@ def load_settings_from_yaml(
 
     new_vars = read_yaml(io.StringIO(text))
     if new_vars:
-        new_vars = _resolve_variables(new_vars, base_dir=base_dir)
+        if base_dir is not Ellipsis:
+            new_vars = _resolve_variables(new_vars, base_dir=base_dir)
 
         # much extended version of object_to_update.update(_new_vars)
         from .settings_update import update_data
