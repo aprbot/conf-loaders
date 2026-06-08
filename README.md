@@ -261,6 +261,15 @@ If `settings` contains `SAVE_SETTINGS_DEBUG` key with a file path, dumps all set
 
 ## Changelog
 
+### 0.5.0
+
+- `load_settings_from_yaml`:
+  - relative path resolution can be disabled at all (even `!` removing) using `base_dir=...`
+  - relative values start from `!` provide warning if `base_dir=None`
+  - `resolve_content_from_env=False` disables file content resolving from environment
+- `save_settings_debug`:
+  - `base_dir` option (like in `load_settings_from_yaml`) provides supplement path resolution for debugging purposes
+
 ### 0.4.0
 
 - Relative path resolution is now recursive — works inside nested dicts and lists, not just top-level values
