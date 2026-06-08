@@ -237,7 +237,10 @@ def load_vars_from_env(
         )
 
 
-def save_settings_debug(settings: Mapping[str, Any]):
+def save_settings_debug(
+    settings: Mapping[str, Any],
+    base_dir: Optional[PathLike] = None,
+):
     """
     save all settings for debug only purposes
     
@@ -259,6 +262,10 @@ def save_settings_debug(settings: Mapping[str, Any]):
                 or inspect.isclass(v)
             )
         }
+        
+        if base_dir is not Ellipsis:
+            _d = _resolve_variables(_d, base_dir=base_dir, debug_mode=True)
+        
         _d["environment"] = dict(os.environ.items())
 
         p = Path(_s)
