@@ -82,6 +82,7 @@ def load_settings_from_yaml(
 
     text = read_text(path)
     if resolve_content_from_env:
+        # TODO use better resolver implementation
         from varsubst import varsubst
         text = varsubst(text)
 
