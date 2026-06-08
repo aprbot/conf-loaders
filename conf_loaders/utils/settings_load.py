@@ -44,6 +44,7 @@ def _resolve_variables(v: Any, base_dir: Optional[PathLike] = None) -> Any:
 def load_settings_from_yaml(
     path: PathLike,
     object_to_update: MutableMapping[str, Any],
+    resolve_content_from_env: bool = True,
     base_dir: Optional[PathLike] = None,
     show_update_errors: bool = True,
 ):
@@ -54,16 +55,18 @@ def load_settings_from_yaml(
     Args:
         path: path to yaml file
         object_to_update: object to be updated using this file, usually locals()
+        resolve_content_from_env: whether to resolve file variables substitutions using environment 
         base_dir: base directory to translate relative paths; 
             None means to disable this translation, but perform some checks and fixes;
             ... means to disable any translations and checks at all
         show_update_errors: whether to verbose updating errors
 
     """
-    from varsubst import varsubst
 
     text = read_text(path)
-    text = varsubst(text)
+    if resolve_content_from_env:
+        from varsubst import varsubst
+        text = varsubst(text)
 
     new_vars = read_yaml(io.StringIO(text))
     if new_vars:
