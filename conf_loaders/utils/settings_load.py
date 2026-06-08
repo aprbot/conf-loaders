@@ -222,11 +222,11 @@ def save_settings_debug(settings: Mapping[str, Any]):
             k: v
             for k, v in settings.items()
             if not (
-                    k.startswith("__")
-                    or len(k.strip("_")) < 2
-                    or callable(v)
-                    or inspect.ismodule(v)
-                    or inspect.isclass(v)
+                k.startswith("__")
+                or len(k.strip("_")) < 2
+                or callable(v)
+                or inspect.ismodule(v)
+                or inspect.isclass(v)
             )
         }
         _d["environment"] = dict(os.environ.items())
