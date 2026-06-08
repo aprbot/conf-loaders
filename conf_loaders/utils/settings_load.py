@@ -263,6 +263,9 @@ def save_settings_debug(
             )
         }
         
+        if base_dir is None:
+            base_dir = settings.get("BASE_DIR", None)
+        
         if base_dir is not Ellipsis:
             _d = _resolve_variables(_d, base_dir=base_dir, debug_mode=True)
         

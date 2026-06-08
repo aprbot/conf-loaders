@@ -261,6 +261,11 @@ If `settings` contains `SAVE_SETTINGS_DEBUG` key with a file path, dumps all set
 
 ## Changelog
 
+### 0.6.0
+
+- `save_settings_debug`:
+  - if `base_dir=None` then it will be extracted from `settings.BASE_DIR`
+
 ### 0.5.0
 
 - `load_settings_from_yaml`:
