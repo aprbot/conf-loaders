@@ -19,12 +19,12 @@ def _resolve_variables(
 
     if isinstance(v, dict):
         return {
-            k: _resolve_variables(vv, base_dir=base_dir)
+            k: _resolve_variables(vv, base_dir=base_dir, debug_mode=debug_mode)
             for k, vv in v.items()
         }
     if isinstance(v, (list, tuple)):
         return [
-            _resolve_variables(vv, base_dir=base_dir) for vv in v
+            _resolve_variables(vv, base_dir=base_dir, debug_mode=debug_mode) for vv in v
         ]
 
     if isinstance(v, str):

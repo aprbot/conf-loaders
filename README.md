@@ -261,6 +261,10 @@ If `settings` contains `SAVE_SETTINGS_DEBUG` key with a file path, dumps all set
 
 ## Changelog
 
+### 0.6.1
+
+- `_resolve_variables` recursion hotfix
+
 ### 0.6.0
 
 - `save_settings_debug`:
