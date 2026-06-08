@@ -187,12 +187,13 @@ load_vars_from_env(
 )
 ```
 
-With `MYAPP_DB_HOST=localhost` and `MYAPP_DB_PORT=5432` in environment:
+With `MYAPP_DB_HOST=localhost` and `MYAPP_DB_PORT_NUMBER=5432` and `MYAPP_USE_PROXY_FLAG=1` in environment:
 
 ```python
 # Results in:
 DB_HOST = "localhost"
-DB_PORT = "5432"
+DB_PORT = 5432
+USE_PROXY = True
 ```
 
 Double underscores create nested dicts: `MYAPP_CACHE__REDIS__HOST=localhost` → `CACHE["REDIS"]["HOST"] = "localhost"`.
